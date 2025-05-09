@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 
 import { Chart } from "../PieChart/PieChart";
 import { countCategories } from "../../utils/countCategories";
-import { selectTransactions } from "../../redux/transactions/slice";
-import { selectUser } from "../../redux/user/slice";
+import { selectTransactions } from "../../redux/transactions/selectors";
+import { selectUser } from "../../redux/user/selectors";
 import { fetchCurrentUser } from "../../redux/user/operations";
+import { getTransactions } from "../../redux/transactions/operations";
 
 import warningImg from "../../assets/no_data.jpeg";
 import s from "./TransactionsChart.module.css";
@@ -16,6 +17,10 @@ export const TransactionsChart = () => {
 
   const transactions = useSelector(selectTransactions);
   const { totalExpenses } = useSelector(selectUser);
+
+  useEffect(() => {
+    dispatch(getTransactions({ type: "expenses" }));
+  }, [dispatch]);
 
   useEffect(() => {
     if (transactions === null) return;
