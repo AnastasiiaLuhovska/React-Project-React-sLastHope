@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
+import TransactionModal from "../TransactionForm/TransactionModal";
 import s from "./TransactionsList.module.css";
 import {
   selectFilteredTransactions,
@@ -8,6 +10,13 @@ import clsx from "clsx";
 
 const TransactionsList = () => {
   const transactions = useSelector(selectFilteredTransactions);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+
+  const handleEditClick = (transaction) => {
+    setSelectedTransaction(transaction);
+    setIsModalOpen(true);
+  };
   return (
     <>
       <ul className={s.transactionsList}>
@@ -31,9 +40,15 @@ const TransactionsList = () => {
             <span className={clsx(s.sum, s.content)}>
               {transaction.sum}/ Add Currency from User Info
             </span>
+            <button onClick={() => handleEditClick(transaction)}>Edit</button>
           </li>
         ))}
       </ul>
+      <TransactionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        transaction={selectedTransaction}
+      />
     </>
   );
 };

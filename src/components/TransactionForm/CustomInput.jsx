@@ -1,18 +1,20 @@
 import React from "react";
-import s from "./TransactionForm.module.css";
 
 const CustomInput = React.forwardRef(
-  ({ value, onClick, placeholder, icon: IconComponent }, ref) => (
-    <div className={s["t-input-wrapper"]} onClick={onClick}>
+  (
+    { value, onClick, placeholder, icon: IconComponent, classNames = {} },
+    ref
+  ) => (
+    <div className={classNames.wrapper || ""} onClick={onClick}>
       <input
         type="text"
         ref={ref}
         value={value || ""}
         placeholder={placeholder}
         readOnly
-        className={s["t-input"]}
+        className={classNames.input || ""}
       />
-      {IconComponent && <IconComponent className={s["t-icon"]} />}
+      {IconComponent && <IconComponent className={classNames.icon || ""} />}
     </div>
   )
 );
