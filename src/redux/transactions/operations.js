@@ -50,57 +50,14 @@ export const getTransactions = createAsyncThunk(
 //
 //TransactionHistoryPage
 //
-
-export const fetchIncomes = createAsyncThunk(
-  "transactions/fetchIncomes",
-  async (signal, thunkAPI) => {
+export const deleteTransaction = createAsyncThunk(
+  "transactions/deleteTransaction",
+  async ({ _id }, thunkAPI) => {
     try {
-      const response = await instance.get("/transactions/incomes", {
-        signal,
-      });
-      return response.data;
+      await instance.delete(`/transactions/${_id}`);
+      return _id;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
-export const fetchExpenses = createAsyncThunk(
-  "transactions/fetchExpenses",
-  async (signal, thunkAPI) => {
-    try {
-      const response = await instance.get("/transactions/expenses", {
-        signal,
-      });
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
-export const fetchIncomesByDate = createAsyncThunk(
-  "transactions/fetchIncomesByDate",
-  async (date, thunkAPI) => {
-    try {
-      const response = await instance.get(`/transactions/incomes?date=${date}`);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
-    }
-  }
-);
-
-export const fetchExpensesByDate = createAsyncThunk(
-  "transactions/fetchExpensesByDate",
-  async (date, thunkAPI) => {
-    try {
-      const response = await instance.get(
-        `/transactions/expenses?date=${date}`
-      );
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return handleError(error, thunkAPI);
     }
   }
 );

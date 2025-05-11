@@ -1,15 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
 import s from "./TransactionsHistoryPage.module.css";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Header from "../../components/Header/Header";
 import { TransactionsTotalAmount } from "../../components/TransactionsTotalAmount/TransactionsTotalAmount";
 import TransactionsList from "../../components/TransactionsList/TransactionsList";
 import TransactionsSearchTools from "../../components/TransactionsSearchTools/TransactionsSearchTools";
-import {
-  fetchExpenses,
-  fetchIncomes,
-} from "../../redux/transactions/operations";
+
 import {
   selectIsLoading,
   selectIsRefreshing,
@@ -17,6 +13,8 @@ import {
 } from "../../redux/transactions/selectors";
 import { filterTransactions } from "../../redux/transactions/slice";
 import clsx from "clsx";
+import { getTransactions } from "../../redux/transactions/operations";
+import { fetchCurrentUser } from "../../redux/user/operations";
 
 const TransactionsHistoryPage = () => {
   const dispatch = useDispatch();
@@ -27,15 +25,10 @@ const TransactionsHistoryPage = () => {
   const { transactionsType } = useParams();
 
   useEffect(() => {
-    const controller = new AbortController();
     if (isRefreshing || !isToken) return;
 
-    if (transactionsType === "incomes") {
-      dispatch(fetchIncomes(controller.signal));
-    } else dispatch(fetchExpenses(controller.signal));
-    return () => {
-      controller.abort();
-    };
+    dispatch(getTransactions({ type: transactionsType }));
+    dispatch(fetchCurrentUser());
   }, [dispatch, isRefreshing, isToken, transactionsType]);
 
   const handleSearchInput = (e) => {
@@ -44,8 +37,11 @@ const TransactionsHistoryPage = () => {
     dispatch(filterTransactions(value));
   };
 
+  const isValidAdress =
+    transactionsType === "incomes" || transactionsType === "expenses";
   return (
     <div className={s.mainWrapper}>
+      {!isValidAdress && <Navigate to="/transactions/history/incomes" />}
       <h3 className={s.title}>All Income</h3>
       <p className={s.description}>
         Track and celebrate every bit of earnings effortlessly! Gain insights

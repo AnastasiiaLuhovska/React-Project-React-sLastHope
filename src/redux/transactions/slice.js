@@ -3,6 +3,7 @@ import {
   addTransaction,
   updateTransaction,
   getTransactions,
+  deleteTransaction,
 
   fetchIncomes,
   fetchExpenses,
@@ -23,14 +24,40 @@ const transactionSlice = createSlice({
   name: "transactions",
   initialState,
   reducers: {
+
+    filterTransactions: (state, action) => {
+      const filterValue = action.payload?.toLowerCase();
+
+      return {
+        ...state,
+        filteredItems:
+          state.items?.filter((transaction) =>
+            Object.values(transaction).some(
+              (value) =>
+                (typeof value === "string" &&
+                  value.toLowerCase().includes(filterValue.toLowerCase())) ||
+                (typeof value === "object" &&
+                  value !== null &&
+                  Object.values(value).some(
+                    (item) =>
+                      typeof item === "string" &&
+                      item.toLowerCase().includes(filterValue.toLowerCase())
+                  ))
+            )
+          ) ?? [],
+      };
+         },  
+
     setSelectedType(state, action) {
       state.selectedType = action.payload;
+
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getTransactions.fulfilled, (state, { payload }) => {
         state.items = payload;
+        state.filteredItems = payload;
       })
       .addCase(addTransaction.pending, (state) => {
         state.isLoading = true;
@@ -63,59 +90,22 @@ const transactionSlice = createSlice({
       //
       // TransactionsHistoryPage
       //
-      .addCase(fetchIncomes.pending, (state, action) => {
+      .addCase(deleteTransaction.pending, (state, action) => {
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(fetchIncomes.rejected, (state, action) => {
+      .addCase(deleteTransaction.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       })
-      .addCase(fetchIncomes.fulfilled, (state, action) => {
+      .addCase(deleteTransaction.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = action.payload;
-        state.filteredItems = action.payload;
-      })
-      .addCase(fetchExpenses.pending, (state, action) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchExpenses.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-      .addCase(fetchExpenses.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.items = action.payload;
-        state.filteredItems = action.payload;
-      })
-
-      //
-      //ByDate
-      .addCase(fetchIncomesByDate.pending, (state, action) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchIncomesByDate.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-      .addCase(fetchIncomesByDate.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.items = action.payload;
-        state.filteredItems = action.payload;
-      })
-      .addCase(fetchExpensesByDate.pending, (state, action) => {
-        state.isLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchExpensesByDate.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-      .addCase(fetchExpensesByDate.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.items = action.payload;
+        state.items = state.items.filter(
+          (transaction) => transaction._id !== action.payload
+        );
+        state.filteredItems = state.filteredItems.filter(
+          (transaction) => transaction._id !== action.payload
+        );
       });
   },
 });

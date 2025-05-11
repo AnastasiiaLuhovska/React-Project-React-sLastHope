@@ -1,0 +1,47 @@
+.buttonsWrapper {
+  background-color: #171719;
+  width: 96px;
+  height: 44px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 8px;
+  /* position: absolute;
+  top: 0;
+  right: 0; */
+}
+.editBtn {
+  background: #0ef387;
+  border-radius: 40px;
+  padding: 14px;
+  /* width: 44px;
+  height: 44px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+  fill: #0c0d0d;
+}
+.deletetBtn {
+  background: #0c0d0d;
+  border-radius: 40px;
+  padding: 14px;
+  /* width: 44px;
+  height: 44px; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+}
+.editIcon {
+  stroke-width: 1.5px;
+  stroke: #0c0d0d;
+}
+deletIcon {
+  stroke-width: 1.5px;
+  stroke: #fafafa;
+  width: 100px;
+}
